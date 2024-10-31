@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+</head>
+<body>
+<h1>Todo List</h1>
+<ul id="todoList"></ul>
+<input type="text" id="todoInput" placeholder="New todo">
+<button onclick="addTodo()">Add Todo</button>
+
+<script>
+    async function renderTodos() {
+        const response = await fetch('/assignment_5/todos'); // Путь может меняться в зависимости от контекста приложения
+        const todos = await response.json();
+        const todoList = document.getElementById("todoList");
+        todoList.innerHTML = todos.map(todo => `<li>${todo.description}</li>`).join("");
+    }
+
+    async function addTodo() {
+        const todoInput = document.getElementById("todoInput");
+        const description = todoInput.value;
+
+        if (description) {
+            await fetch('/assignment_5/todos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description })
+            });
+            todoInput.value = '';
+            renderTodos();
+        }
+    }
+
+    renderTodos();
+</script>
+</body>
+</html>
